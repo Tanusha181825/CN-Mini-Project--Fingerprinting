@@ -115,7 +115,7 @@ def extract_server_info(response):
 
 
 # -------------------------------
-# Identify Server Type (Enhanced)
+# Identify Server Type
 # -------------------------------
 def identify_server(response):
     res = response.lower()
@@ -140,32 +140,45 @@ def identify_server(response):
 
 
 # -------------------------------
-# Scan Single Host
+# Scan Single Host (UPDATED)
 # -------------------------------
 def scan_host(host):
-    start_time = time.time()
 
-    # HTTP
+    # -------- HTTP --------
+    http_start = time.time()
     http_response = retry(grab_http_banner, host)
+    http_end = time.time()
+    http_time = round(http_end - http_start, 2)
+
     http_server = extract_server_info(http_response)
     http_type = identify_server(http_response)
 
-    # HTTPS
+    # -------- HTTPS --------
+    https_start = time.time()
     https_response = retry(grab_https_banner, host)
+    https_end = time.time()
+    https_time = round(https_end - https_start, 2)
+
     https_server = extract_server_info(https_response)
     https_type = identify_server(https_response)
 
-    end_time = time.time()
-
+    # -------- PRINT OUTPUT --------
     with lock:
         print(f"\n--- {host} ---")
+
         print(f"[HTTP]  {http_server}")
         print(f"[HTTP]  Identified: {http_type}")
+        print(f"⏱ HTTP Time:  {http_time} sec")
+
         print(f"[HTTPS] {https_server}")
         print(f"[HTTPS] Identified: {https_type}")
-        print(f"⏱ Response Time: {round(end_time - start_time, 2)} sec")
+        print(f"⏱ HTTPS Time: {https_time} sec")
 
-        # Banner preview (for demo)
+        # Comparison insight (nice for demo)
+        diff = round(https_time - http_time, 2)
+        print(f"⚡ HTTPS is {diff} sec slower than HTTP")
+
+        # Banner preview
         if isinstance(http_response, str):
             preview = http_response[:200].replace("\r\n", " ")
             print(f"📄 Preview: {preview}")
@@ -203,9 +216,9 @@ def main():
     print(f"\n🚀 Total Scan Time: {round(end - start, 2)} seconds")
 
     print("\n📊 Observations:")
-    print("- HTTPS responses are slightly slower due to SSL/TLS handshake")
-    print("- Multi-threading significantly reduces total scan time")
-    print("- Some servers hide their identity for security reasons")
+    print("- HTTPS is slower due to SSL/TLS handshake")
+    print("- Multi-threading reduces total scan time")
+    print("- Some servers hide their identity for security")
 
 
 # -------------------------------
