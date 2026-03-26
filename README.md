@@ -1,14 +1,18 @@
 Web Server Fingerprinting Tool
 
 Objective:
-The objective of this project is to learn about how websites communicate with each other in a network by developing a tool that will identify what server software is being used by various websites.
+The objective of this project is to learn about how websites communicate with each other in a network by developing a tool that will identify server software and analyze how systems communicate over different protocols.
 
 Features:
 Raw Sockets Only No high level socket libraries used
 Supports both HTTP and HTTPS scanning
 Ensures secure communication using SSL TLS
+Extracts SSL certificate information
+Includes UDP scanning (DNS and NTP services)
+Resolves domain names to IP addresses
 Supports multi threaded scanning
 Recognizes various types of web server software
+Measures response time for HTTP and HTTPS separately
 Manages errors that may occur during scanning such as timeouts and hidden servers
 
 Concept In Simple Words:
